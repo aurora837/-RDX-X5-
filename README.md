@@ -1,86 +1,87 @@
-# 基于RDX X5的多自由度仿生机械义手
+# Multi-DOF Bionic Prosthetic Hand Based on RDX X5
 
-本项目基于RDX X5平台，设计并实现了一款拥有16个自由度手和5个自由度机械臂的多自由度仿生机械义手。我们的目标是通过提供低成本、高自由度的解决方案，帮助残疾人士改善日常生活。同时，其卓越的可移植性使其成为具身智能的重要组成部分，而远程操控能力则使其在医疗和救灾领域成为得力的助手。
+Our team has designed a multi-degree-of-freedom (DOF) bionic prosthetic hand based on the RDX X5 platform. It features a 16-DOF hand and a 5-DOF robotic arm, aiming to achieve true multi-DOF functionality. Our goal is to solve the daily life challenges of amputees成本-effectively, serve as a crucial component for embodied intelligence through its portability, and act as a capable assistant in the medical and disaster relief fields with its remote operation capabilities.
 
-## 核心功能
+## Core Features
 
-*   **高自由度：** 16自由度手 + 5自由度机械臂，实现精细化的仿生动作。
-*   **低成本解决方案：** 旨在为残疾人群体提供经济实惠的义肢选择。
-*   **可移植性：** 适合集成到各种具身智能系统中。
-*   **远程操控性：** 支持在医疗和救灾等场景下的远程协作。
+*   **High Degrees of Freedom:** A 16-DOF hand combined with a 5-DOF arm enables highly sophisticated and life-like movements.
+*   **Cost-Effective Solution:** Designed to provide an affordable yet powerful prosthetic option for the disabled community.
+*   **High Portability:** Easily adaptable and integrable into various embodied AI systems.
+*   **Remote Operation:** Supports remote control for applications in telemedicine and disaster response scenarios.
 
-## 系统架构
+## System Architecture
 
-我们的嵌入式智能义手系统遵循分层设计理念，主要分为四个核心层次：
+Our embedded intelligent prosthetic system follows a layered design philosophy, comprising four core layers: Perception, Control, Software, and Hardware.
 
-<img width="1471" height="1314" alt="image" src="https://github.com/user-attachments/assets/ec4f5e5f-1579-419e-827b-d41e22011098" />
+<img width="1471" height="1314" alt="System Architecture Diagram" src="https://github.com/user-attachments/assets/ec4f5e5f-1579-419e-827b-d41e22011098" />
 
-*图 1: 智能义手系统组成*
+*Figure 1: System Components of the Intelligent Prosthetic Hand*
 
-### 1. 感知层 (Perception Layer)
+### 1. Perception Layer
 
-感知层负责收集来自外部环境的多模态信息，并将其转化为可供控制层决策的四维信息网络（视觉、听觉、电机力矩、电机电流）。
+The Perception Layer is responsible for collecting multi-modal information from the external environment and converting it into a four-dimensional information network (vision, audio, motor torque, and motor current) for the Control Layer's decision-making.
 
-*   **视觉感知：** 使用YOLO模型分析相机输入的彩色和深度图像，输出3D检测数据、物体种类、点云图等信息。
-*   **听觉感知：** 本地部署KWS（Keyword Spotting）模型，低算力消耗地检测唤醒词。
-*   **力觉/电流反馈：** 读取电机力矩和电流信息，用于精细控制和安全保障。
+*   **Visual Perception:** Utilizes a YOLO model to analyze color and depth images from the camera, outputting 3D detection data, object categories, point clouds, and more.
+*   **Auditory Perception:** A locally deployed KWS (Keyword Spotting) model detects wake words with low computational overhead.
+*   **Haptic/Current Feedback:** Reads motor torque and current data for fine-grained control and safety assurance.
 
-### 2. 控制层 (Control Layer)
+### 2. Control Layer
 
-控制层是系统的大脑，负责决策和协调各部件的行动。我们采用了先进的机器人操作系统和仿真平台来实现高精度的电机控制。
+The Control Layer serves as the brain of the system, responsible for decision-making and coordinating all components. We employ an advanced robotics operating system and simulation platform to achieve high-precision motor control.
 
-*   **ROS2机器人操作系统：** 作为核心的中间件，连接感知层、软件层和硬件层，实现数据通信和任务调度。
-    *   自定义ROS节点发布感知数据。
-    *   软件层和硬件层订阅所需数据。
-    *   通过`ROS2_control`框架管理电机实时位置信息和推理出的未来电机位置。
-*   **Isaac Gym仿真平台：** 用于训练控制电机行为的策略网络。
-    *   采用A2C强化学习算法进行训练。
-    *   结合AMP判别器进行对抗式训练，提高动作的准确性和连贯性。
-    *   训练出的机器人模型能够适应不同环境。
+*   **ROS 2 (Robot Operating System 2):** Acts as the core middleware, bridging the Perception, Software, and Hardware layers for data communication and task scheduling.
+    *   Custom ROS nodes publish perception data.
+    *   The Software and Hardware layers subscribe to relevant topics to receive information.
+    *   The `ros2_control` framework manages real-time motor position data and future motor positions inferred by the network.
+*   **Isaac Gym Simulation Platform:** Used to train the policy network that controls motor behavior.
+    *   Training is conducted using the A2C (Advantage Actor-Critic) reinforcement learning algorithm.
+    *   Adversarial training with an AMP (Adversarial Motion Priors) discriminator is used to enhance the accuracy and coherence of the agent's actions.
+    *   The trained model enables the robot to adapt to various environments.
 
-### 3. 软件层 (Software Layer)
+### 3. Software Layer
 
-软件层集成了多种功能调用，提升了义手的智能化和用户交互体验。
+The Software Layer integrates various functional calls to enhance the intelligence and user experience of the prosthetic hand.
 
-*   **电机调试软件：** DynamixelWizard
-*   **模型定制：** Coze平台、KWS平台
-*   **边缘大模型网关：** 火山方舟引擎
-*   **云端数据处理：** 火山引擎物联网平台
+*   **Motor Debugging:** Dynamixel Wizard
+*   **Model Customization:** Coze Platform, KWS Platform
+*   **Edge Large Model Gateway:** Volcano Engine Ark
+*   **Cloud Data Processing:** Volcano Engine IoT Platform
 
-通过这些软件组件，我们实现了：
+Through these software components, we have implemented:
 
-*   **移动APP控制：** 用户可以通过移动APP与义手进行交互。
-*   **云端数据处理：** 利用云平台进行数据分析和模型优化。
-*   **边缘智能体调用：** 实现本地化的智能响应和计算。
+*   **Mobile App Control:** Users can interact with the prosthetic hand via a mobile application.
+*   **Cloud Data Processing:** Utilizes cloud platforms for data analysis and model optimization.
+*   **Edge AI Agent Invocation:** Enables localized intelligent responses and computations.
 
-#### 端云联络与语音交互
+#### Cloud-Edge Communication and Voice Interaction
 
-*   **KWS激活与Nodejs服务器：** C++节点接收KWS模型激活信号，传递给Nodejs服务器。
-*   **火山方舟引擎集成：** Nodejs服务器调用火山引擎的`StartVoiceChat` OpenAPI，配置ASR（语音识别）、TTS（语音合成）和火山方舟LLM（大语言模型）。
-*   **实时通信：** 生成RTC客户端所需连接参数，通过C++客户端加入房间实现端云通信。
-*   **AI回复与播放：** 通过回调函数，实时显示AI生成的文字回复并进行语音播报。
+*   **KWS Activation & Node.js Server:** A C++ node receives the KWS activation signal and passes it to a Node.js server.
+*   **Volcano Engine Ark Integration:** The Node.js server calls the Volcano Engine `StartVoiceChat` OpenAPI, configuring ASR (Automatic Speech Recognition), TTS (Text-to-Speech), and the Ark LLM (Large Language Model).
+*   **Real-Time Communication:** Generates connection parameters for the RTC client, which are then passed back to the C++ client to join the session for real-time cloud-edge communication.
+*   **AI Response & Playback:** Callback functions display the AI-generated text response and play it back as audio.
 
-### 4. 硬件层 (Hardware Layer)
+### 4. Hardware Layer
 
-硬件层是系统的物理基础，负责执行指令和与环境互动。
+The Hardware Layer forms the physical foundation of the system, responsible for executing commands and interacting with the environment.
 
-*   **嵌入式开发板：** RDK X5 是项目的“大脑”，部署并统一调用感知层和控制层的各项功能。
-*   **机械手臂：** 作为项目的“身体”，接收来自RDK X5的指令并执行运动。
+*   **Embedded Development Board:** The RDK X5 serves as the "brain" of the project, deploying and coordinating all functions from the Perception and Control layers.
+*   **Robotic Arm and Hand:** As the "body" of the project, it receives and executes commands from the RDK X5.
 
-#### 端侧控制与通信
+#### Edge Control and Communication
 
-*   **WebSocket Bridge Node：** 在RDK X5上搭建`websocket_bridge_node`，订阅YOLO节点的输出。
-*   **App通信桥梁：** 作为ROS系统与外部App之间的通信桥梁，将App文本指令转发到ROS话题，并将ROS关键信息广播给连接的App客户端。
-*   **HBuilder移动App：** 使用HBuilder开发专属的机械手APP，实现端侧的便捷控制。
+*   **WebSocket Bridge Node:** A `websocket_bridge_node` is set up on the RDK X5 to subscribe to the YOLO node's output.
+*   **App Communication Bridge:** This node acts as a bridge between the ROS system and external applications, forwarding text commands from the app to ROS topics and broadcasting key information (like object detection results and task status) to all connected app clients.
+*   **HBuilder Mobile App:** A dedicated mobile app developed with HBuilder provides convenient control from the edge device.
 
-## 技术栈
+## Technology Stack
 
-*   **硬件：** RDK X5, 机械臂 (16自由度手, 5自由度臂)
-*   **操作系统：** ROS2
-*   **仿真：** Isaac Gym
-*   **强化学习：** A2C, AMP
-*   **感知：** YOLO, KWS
-*   **通信：** ROS2 Topic, WebSocket
-*   **云服务：** 火山引擎 (物联网平台, 方舟引擎)
-*   **App开发：** HBuilder
-<img width="1706" height="1279" alt="464624037-5f01065a-917c-45f1-95ca-b5e1ba79d372" src="https://github.com/user-attachments/assets/010688d3-7bbe-4be8-a731-f4a557b53628" />
+*   **Hardware:** RDK X5, Robotic Arm (16-DOF Hand, 5-DOF Arm)
+*   **Operating System:** ROS 2
+*   **Simulation:** Isaac Gym
+*   **Reinforcement Learning:** A2C, AMP
+*   **Perception:** YOLO, KWS
+*   **Communication:** ROS 2 Topics, WebSocket
+*   **Cloud Services:** Volcano Engine (IoT Platform, Ark Engine)
+*   **App Development:** HBuilder
+
+<img width="1706" height="1279" alt="Project Demonstration" src="https://github.com/user-attachments/assets/010688d3-7bbe-4be8-a731-f4a557b53628" />
