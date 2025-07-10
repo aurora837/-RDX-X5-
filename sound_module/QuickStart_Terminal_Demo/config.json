@@ -1,0 +1,25 @@
+{
+    "app_id":"your app id",
+    "token":"your token",
+    "room_id":"your room id",
+    "user_id":"your user id",
+    "enable_audio":false,
+    "enable_video":true,
+    "enable_external_audio":false,
+    "enable_external_video":false,
+    "audio_file":"48000-stereo-s16le.pcm",
+    "video_file":"1280X720X15XI420.yuv",
+    "video_capture_config":{
+        "width":1280,
+        "height":720,
+        "fps":30
+    },
+    "video_encoder_config":{
+        "width":1280,
+        "height":720,
+        "fps":30,
+        "max_bitrate":3000
+    },
+	"audio_device_index":-1,
+    "video_device_index":0
+}

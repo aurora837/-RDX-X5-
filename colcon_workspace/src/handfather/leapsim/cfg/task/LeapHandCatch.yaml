@@ -1,0 +1,140 @@
+# used to create the object
+name: LeapHandRot
+physics_engine: ${..physics_engine}
+on_evaluation: False
+
+env:
+  # environment basic
+  
+  #-------------------环境数量---------------------#
+  numEnvs: 16384 #${resolve_default:16384,${...num_envs}}
+  #注意，训练模式中，最小环境数量（2的n次幂）是1024
+
+  numObservations: 132
+  numActions: 21
+  envSpacing: 0.25
+  phase_period: 2
+  exec_lag: 1
+  approach_distance_threshold: 0.15  # 接近物体的距离阈值(米)
+  contact_threshold: 2.0             # 接触力阈值(牛顿)
+  lift_height_threshold: 0.05        # 提升高度阈值(米)
+  episodeLength: 4000
+  enableDebugVis: False
+  aggregateMode: 1
+
+  controller:
+    torque_control: False
+    controlFrequencyInv: 2  # 20Hz
+    pgain: 3
+    dgain: 0.1
+
+  genGrasps: False
+
+  
+
+  clipObservations: 5.0
+  clipActions: 1.0
+  reset_height_threshold: 0.4
+  grasp_cache_name: 'leap_hand_in_palm_cube' # This must be supplied via command line
+  grasp_cache_len: 1024
+
+  # Random forces applied to the object
+  forceScale: 10.0
+  randomForceProbScalar: 0.25
+  forceDecay: 0.9
+  forceDecayInterval: 0.08
+
+  reward:
+    angvelClipMin: -0.25
+    angvelClipMax: 0.25
+    rotateRewardScale: 0.0
+    objLinvelPenaltyScale: -0.3
+    poseDiffPenaltyScale: -0.1
+    torquePenaltyScale: -0.1
+    workPenaltyScale: -1.0
+
+  additional_rewards:
+    rotate_finite_diff: 1.25
+    object_fallen: -10 
+
+  # override_object_init_z: 0.54
+  # override_object_init_x: -0.006 
+  # override_object_init_y: 0.012
+  override_object_init_z: 0.523
+  override_object_init_x: -0.021 
+  override_object_init_y: 0.003
+
+  
+  num_contact_fingers: 0
+  baseObjScale: 0.8
+  
+  randomization:
+    # Randomization Property
+    randomizeMass: True
+    randomizeMassLower: 0.01
+    randomizeMassUpper: 0.25
+    randomizeCOM: True
+    randomizeCOMLower: -0.01
+    randomizeCOMUpper: 0.01
+    randomizeFriction: True
+    randomizeFrictionLower: 0.3
+    randomizeFrictionUpper: 3.0
+    randomizeScale: True
+    # if scale_list_init is True, randomizeScaleLower and randomizeScaleUpper is not useful
+    scaleListInit: True
+    randomizeScaleList: [0.95, 0.9, 1.0, 1.05, 1.1]     
+    randomizeScaleLower: 0.75  # only useful when not scaleListInit
+    randomizeScaleUpper: 0.8  # only useful when not scaleListInit
+    randomizePDGains: True
+    randomizePGainLower: 2.9
+    randomizePGainUpper: 3.1
+    randomizeDGainLower: 0.09
+    randomizeDGainUpper: 0.11
+
+  privInfo:
+    enableObjPos: True
+    enableObjScale: True
+    enableObjMass: True
+    enableObjCOM: True
+    enableObjFriction: True
+
+  object:
+    type: 'cube' # can be block, egg or pen
+    sampleProb: [1.0]
+
+  sim_to_real_indices: [16, 17, 18, 19, 20, 1, 0, 2, 3, 12, 13, 14, 15, 5, 4, 6, 7, 9, 8, 10, 11]
+  real_to_sim_indices: [6, 5, 7, 8, 17, 18, 19, 20, 10, 9, 11, 12, 14, 13, 15, 16, 0, 1, 2, 3, 4]
+  asset:
+    handAsset: 'assets/catch.urdf'
+    # handAsset: 'assets/leap/leap.urdf'
+    # handAsset: 'assets/leap_hand/wider_hand_export/robot.urdf'
+    # handAsset: 'assets/leap_hand/wider_hand_export/robot_modified.urdf'
+
+  # set to True if you use camera sensors in the environment
+  enableCameraSensors: False
+
+sim:
+  dt: 0.0083333 
+  substeps: 2
+  up_axis: 'z'
+  #use_gpu_pipeline: False
+  use_gpu_pipeline: ${eq:${...pipeline},'gpu'}
+  gravity: [0.0, 0.0, -9.81]
+
+
+  physx:
+    num_threads: 128  #${....num_threads}
+    solver_type: ${....solver_type}
+    #use_gpu: False 
+    use_gpu: ${contains:'cuda',${....sim_device}} # set to False to run on CPU
+    
+    num_position_iterations: 8       #物理迭代次数
+    num_velocity_iterations: 0
+    max_gpu_contact_pairs: 12000000 # 8*1024*1024
+    num_subscenes: ${....num_subscenes}      #子场景数，在cofig.yaml中定义
+    contact_offset: 0.002
+    rest_offset: 0.0
+    bounce_threshold_velocity: 0.2
+    max_depenetration_velocity: 1000.0
+    default_buffer_size_multiplier: 5.0
+    contact_collection: 2 # 0: CC_NEVER (don't collect contact info), 1: CC_LAST_SUBSTEP (collect only contacts on last substep), 2: CC_ALL_SUBSTEPS (default - all contacts)

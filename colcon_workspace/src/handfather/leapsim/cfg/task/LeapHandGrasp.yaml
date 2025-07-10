@@ -1,0 +1,29 @@
+
+name: LeapHandGrasp
+
+defaults:
+  - LeapHandRot
+
+env:
+  controller:
+    controlFrequencyInv: 8
+  
+  episodeLength: 50
+  genGrasps: True
+
+  disable_actions: True
+
+  randomization:
+    randomizeMass: True
+    randomizeMassLower: 0.05
+    randomizeMassUpper: 0.051
+    randomizeCOM: False
+    randomizeFriction: False
+    randomizeScale: False
+    randomizePDGains: False
+
+  
+
+
+
+
