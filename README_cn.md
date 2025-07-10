@@ -12,6 +12,7 @@
 ## 系统架构
 
 我们的嵌入式智能义手系统遵循分层设计理念，主要分为四个核心层次：
+<img width="1471" height="1314" alt="image" src="https://github.com/user-attachments/assets/25e234c7-6847-49bd-a173-cddcc19c3915" />
 
 *图 1: 智能义手系统组成*
 
